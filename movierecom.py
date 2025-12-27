@@ -2,24 +2,15 @@ import requests
 import streamlit as st
 import pickle
 
-# =====================================================
-# PAGE CONFIG
-# =====================================================
 st.set_page_config(
     page_title="Movie Recommendation System",
     page_icon="🎬",
     layout="wide"
 )
 
-# =====================================================
-# SESSION STATE
-# =====================================================
 if "selected_movie" not in st.session_state:
     st.session_state.selected_movie = None
 
-# =====================================================
-# CUSTOM CSS
-# =====================================================
 st.markdown("""
 <style>
 .stApp {
@@ -106,15 +97,10 @@ div[data-baseweb="option"]:hover {
 </style>
 """, unsafe_allow_html=True)
 
-# =====================================================
-# LOAD DATA
-# =====================================================
+
 movies = pickle.load(open("movies.pkl", "rb"))
 similarity = pickle.load(open("similarity.pkl", "rb"))
 
-# =====================================================
-# TMDB API
-# =====================================================
 API_KEY = "5c48a1a198a6da57f7c081e2a9f30a06"
 
 @st.cache_data(show_spinner=False)
@@ -155,9 +141,8 @@ def set_background(img):
         unsafe_allow_html=True
     )
 
-# =====================================================
 # RECOMMENDATION FUNCTION
-# =====================================================
+
 def recommend(movie_title):
     index = movies[movies["title"] == movie_title].index[0]
     distances = similarity[index]
@@ -176,9 +161,6 @@ def recommend(movie_title):
 
     return names, posters
 
-# =====================================================
-# UI HELPERS
-# =====================================================
 def section(title):
     st.markdown(f'<div class="section-title">{title}</div>', unsafe_allow_html=True)
 
@@ -193,9 +175,6 @@ def movie_card(img, title=None):
         unsafe_allow_html=True
     )
 
-# =====================================================
-# MAIN UI
-# =====================================================
 st.title("🎬 Movie Recommendation System")
 st.markdown(
     "<p style='text-align:center; font-size:18px;'>Find movies similar to your favorite one 🍿</p>",
@@ -224,10 +203,6 @@ with col_btn:
     if st.button("✨ Recommend", use_container_width=True):
         st.session_state.selected_movie = selected
 
-
-# =====================================================
-# RESULTS
-# =====================================================
 if st.session_state.selected_movie:
 
     movie_id = movies[movies["title"] == st.session_state.selected_movie].iloc[0]["id"]
